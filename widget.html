@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Widget Factory!</title>
+    <link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="components/rdash-ui/dist/css/rdash.min.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="scripts/global.js"></script>
+	
+	<script>
+		$( document ).ready(function() {    
+			var id = getParameterByName("id");
+			if (id) {				
+				LoadWidget();	
+			}
+			else
+			{				
+				$(".widget-header-text").html("Create");
+				$(".widget-form-text").html("Create Widget");
+			}
+						
+			$('#saveButton').click(function() {
+				var id = getParameterByName("id");
+				var name = $("#widget-name").val();
+				var price  = $("#widget-price").val();
+				var color = $("#widget-color").val();
+				var melts  = $('#widget-properties-0').prop('checked');
+				var inventory = $("#widget-count").val();
+				var type = (id) ? 'PUT' : 'POST';
+				var url = (id) ? 'http://spa.tglrw.com:4000/widgets/'+ id : 'http://spa.tglrw.com:4000/widgets'
+				var message = (id) ? "Widget updated successfully!" : "Widget added successfully!";
+				
+				$.ajax({
+					type: type,
+					data : 'name='+name+'&color='+color+'&price='+price+'&inventory='+inventory+'&melts='+melts,
+					success: function(ex) 
+					{ 
+						alert(message); 
+						window.location.replace("./widgets.html");
+					},
+					error: function(ex){ alert("An error occurred trying to process. Please try again later."); },
+					url: url,
+					cache:false
+				});			  				
+			});			  			  			
+		});	
+		
+		function LoadWidget()
+		{
+			var id = getParameterByName("id");
+			var name = $("#widget-name");
+			var price  = $("#widget-price");
+			var color = $("#widget-color");
+			var melts  = $("#widget-properties-0");
+			var inventory = $("#widget-count");
+			$.getJSON( "http://spa.tglrw.com:4000/widgets/" + id, function( val ) {
+				
+				name.val(val.name);
+				price.val(val.price);
+				color.val(val.color);
+				melts.prop('checked', val.melts);
+				inventory.val(val.inventory);
+			});			
+		}
+				
+	</script>
+  </head>
+  <body>
+    <div id="page-wrapper" class="open">
+
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar">
+          <li class="sidebar-main"><a href="#">Widget - Detailed <span class="menu-icon fa fa-tachometer"></span></a></li>
+          <li class="sidebar-title"><span>NAVIGATION</span></li>
+          <li class="sidebar-list"><a href="./index.html">Dashboard <span class="menu-icon fa fa-tachometer"></span></a></li>
+          <li class="sidebar-list"><a href="./users.html">Users <span class="menu-icon fa fa-users"></span></a></li>
+          <li class="sidebar-list"><a href="./widgets.html">Widgets <span class="menu-icon fa fa-cubes"></span></a></li>
+        </ul>
+        <div class="sidebar-footer col-xs-12"><a href="#" target="_blank">&copy; 2015 Red Ventures</a></div>
+      </div>
+
+      <!-- End Sidebar -->
+      <div id="content-wrapper">
+
+        <div class="page-content">
+
+          <!-- Header Bar -->
+          <div class="row header col-xs-12">
+            <div class="user pull-right">
+              <div class="item dropdown">
+                <a href="#" class="dropdown-toggle"><img src="img/avatar.jpg" alt=""></a>
+              </div>
+            </div>
+            <div class="meta">
+              <div class="page">Dashboard</div>
+              <div class="breadcrumb-links">Home / Dashboard</div>
+            </div>
+          </div>
+          <!-- End Header Bar -->
+
+          <hr>
+
+          <!-- Create/Edit -->
+          <div class="row" id="createEdit">
+
+            <!-- Widget listing -->
+            <div class="col-lg-12">
+              <div class="widget">
+                <div class="widget-header">
+				<span class="widget-header-text">Edit</span>
+				<div class="pull-right">
+                    <button class="btn btn-sm btn-info" id="saveButton">+ Save</button>
+                  </div>
+				</div>
+                <div class="widget-body">
+                  <form class="form-horizontal">					
+                    <legend class="widget-form-text">Edit Widget</legend>
+
+                    <!-- Name-->
+                    <div class="controls">                    
+                      <input id="widget-name" name="widget-name" type="text" placeholder="foo-bar" class="input-medium">
+                    </div>
+
+                    <!-- Price -->
+                    <div class="controls">
+                      <div class="input-prepend">
+                      Price
+                        <span class="add-on">$</span>
+                        <input id="widget-price" name="widget-price" class="input-medium" placeholder="0.00" type="text">
+                      </div>
+                    </div>
+
+                    <!-- Color -->
+                    <div class="controls">
+                    Color
+                      <select id="widget-color" name="widget-color" class="input-large">
+                        <option>red</option>
+                        <option>purple</option>
+                        <option>black</option>
+                        <option>green</option>
+                        <option>magenta</option>
+                        <option>white</option>
+                        <option>depends on the viewing angle</option>
+                      </select>
+                    </div>
+
+                    <!-- Melts -->
+                    <div class="controls">
+                      Melts
+                      <input type="checkbox" name="widget-properties" id="widget-properties-0" value="melts">
+                    </div>
+
+                    <!-- Inventory -->
+                    <div class="controls">
+                      Inventory
+                      <input id="widget-count" name="widget-count" type="text" placeholder="#?" class="input-small">
+                    </div>
+                  </form>
+        
+				</div><!-- End Widget body -->
+              </div><!-- End Widget -->
+            </div><!-- End Column -->			
+		  </div><!-- End Row -->
+
+        </div><!-- End Page Content -->
+      </div><!-- End Content Wrapper -->
+    </div><!-- End Page Wrapper -->
+  </body>
+</html>

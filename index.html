@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+    <title>Widget Factory!</title>
+    <link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="components/rdash-ui/dist/css/rdash.min.css">
+	
+	<script src="http://code.angularjs.org/1.0.1/angular-1.0.1.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	
+	<script src="scripts/global.js"></script>
+	
+	<script>
+	$( document ).ready(function() {   		  
+		//LoadUsersBody();		
+		//LoadWidgetsBody();		
+		AddOnClickOnTableRow($("#usersBody"), "click", "./user.html", ".text-center");
+		AddOnClickOnTableRow($("#widgetsBody"), "click", "./widget.html", ".text-center");		
+		//AddFilter($("#filterUser"), ".userName");
+		//AddFilter($("#filterWidget"), ".widgetName");
+	});
+
+	function UserListController($scope)
+	{
+		$.getJSON("http://spa.tglrw.com:4000/users", function(data) {
+			$scope.$apply(function(){				
+				$.each( data, function( key, val ) {								
+					$scope.users = data;
+					$scope.usersCount = data.length;
+				});		
+			});
+		});		
+	}
+	
+	function WidgetsController($scope)
+	{
+		$.getJSON("http://spa.tglrw.com:4000/widgets", function(data) {
+			$scope.$apply(function(){				
+				$.each( data, function( key, val ) {								
+					$scope.widgets = data;
+					$scope.widgetsCount = data.length;
+				});		
+			});
+		});		
+	}
+	
+	</script>
+  </head>
+  <body>
+   <div>
+
+    <div id="page-wrapper" class="open">
+
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar">
+          <li class="sidebar-main"><a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a></li>
+          <li class="sidebar-title"><span>NAVIGATION</span></li>
+          <li class="sidebar-list"><a href="./index.html">Dashboard <span class="menu-icon fa fa-tachometer"></span></a></li>
+          <li class="sidebar-list"><a href="./users.html">Users <span class="menu-icon fa fa-users"></span></a></li>
+          <li class="sidebar-list"><a href="./widgets.html">Widgets <span class="menu-icon fa fa-cubes"></span></a></li>
+        </ul>
+        <div class="sidebar-footer col-xs-12"><a href="#" target="_blank">&copy; 2015 Red Ventures</a></div>
+      </div>
+
+      <!-- End Sidebar -->
+      <div id="content-wrapper">
+
+        <div class="page-content">
+
+          <!-- Header Bar -->
+          <div class="row header col-xs-12">
+            <div class="user pull-right">
+              <div class="item dropdown">
+                <a href="#" class="dropdown-toggle"><img src="img/avatar.jpg" alt=""></a>
+              </div>
+            </div>
+            <div class="meta">
+              <div class="page">Dashboard</div>
+              <div class="breadcrumb-links">Home / Dashboard</div>
+            </div>
+          </div>
+          <!-- End Header Bar -->
+
+          <!-- Dashboard Boxes -->
+          <div class="row">
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-header">
+                  <div class="widget-icon green pull-left">
+                    <i class="fa fa-users"></i>
+                  </div>
+                  <div class="title" ng-controller="UserListController">{{usersCount}}</div>
+                  <div class="comment">Users</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-header">
+                  <div class="widget-icon green pull-left">
+                    <i class="fa fa-users"></i>
+                  </div>
+                  <div class="title" ng-controller="WidgetsController">{{widgetsCount}}</div>
+                  <div class="comment">Widgets</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tables -->
+          <div class="row">
+
+            <!-- Users listing -->
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-header">Users
+                  <div class="pull-right"><input type="text" class="form-control input-sm" ng-model="userSearchText"></div>				 
+                </div>
+                <div class="table-responsive" ng-controller="UserListController" >
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+						<tr ng-repeat="user in users | filter:userSearchText">
+						  <td>{{ user.id }}</td>
+						  <td>{{ user.name }}</td>
+						</tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div><!-- End Users -->
+
+            <!-- Widget listing -->
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-header">Widgets
+                  <div class="pull-right"><input type="text" class="form-control input-sm" ng-model="widgetSearchText"></div>
+                </div>
+                <div class="table-responsive" ng-controller="WidgetsController">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+						<tr ng-repeat="widget in widgets | filter:widgetSearchText">
+						  <td>{{ widget.id }}</td>
+						  <td>{{ widget.name }}</td>
+						</tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div><!-- End Widgets -->
+
+          </div><!-- End Tables -->
+
+        </div><!-- End Page Content -->
+      </div><!-- End Content Wrapper -->
+    </div><!-- End Page Wrapper -->
+  </body>
+</html>
